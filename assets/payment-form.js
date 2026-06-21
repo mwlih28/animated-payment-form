@@ -10,11 +10,11 @@ let payDate = '';
 
 /* ── CARD BRAND CONFIG ── */
 const cardColors = {
-  visa:       'linear-gradient(135deg,#1A1F71 0%,#0d1445 45%,#2535a0 100%)',
-  mastercard: 'linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 45%,#0d0d0d 100%)',
-  amex:       'linear-gradient(135deg,#006FCF 0%,#004a9c 45%,#0060b0 100%)',
-  troy:       'linear-gradient(135deg,#8a0000 0%,#6a0000 45%,#b01010 100%)',
-  discover:   'linear-gradient(135deg,#c85000 0%,#a04000 45%,#e86000 100%)'
+  visa:       'linear-gradient(135deg,#16196a 0%,#0c1240 35%,#1e2c8a 70%,#101855 100%)',
+  mastercard: 'linear-gradient(135deg,#141414 0%,#222222 35%,#0e0e0e 70%,#1a1a1a 100%)',
+  amex:       'linear-gradient(135deg,#0058b0 0%,#003e88 35%,#0070cc 70%,#004ca0 100%)',
+  troy:       'linear-gradient(135deg,#780000 0%,#5c0000 35%,#9e0e0e 70%,#6e0000 100%)',
+  discover:   'linear-gradient(135deg,#b04400 0%,#8a3200 35%,#d05800 70%,#a03c00 100%)'
 };
 const cnames = { visa:'Visa', mastercard:'Mastercard', amex:'American Express', troy:'Troy', discover:'Discover' };
 
@@ -80,7 +80,7 @@ function detect(n) {
 function setType(t) {
   if (t === curType) return;
   curType = t;
-  const defaultGrad = 'linear-gradient(135deg,#1a1a2e 0%,#16213e 45%,#0f3460 100%)';
+  const defaultGrad = 'linear-gradient(135deg,#0c1428 0%,#13203e 35%,#192d55 65%,#0b1a3a 100%)';
   const c = t ? cardColors[t] : defaultGrad;
   document.getElementById('face-f').style.background = c;
   document.getElementById('face-b').style.background = c;
