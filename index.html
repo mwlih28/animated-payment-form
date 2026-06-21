@@ -73,58 +73,117 @@
 .inp-row .err-msg{font-size:11px;color:var(--color-text-danger);margin-top:4px;display:none}
 .inp-row input.err~.err-msg{display:block}
 @keyframes inputShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-.scene{width:340px;height:210px;perspective:1200px;margin:0 auto 1.5rem;position:relative}
-.card3d{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.8s cubic-bezier(.25,.46,.45,.94)}
+
+/* ── PHONE COUNTRY SELECTOR ── */
+.phone-wrapper{position:relative;display:flex;align-items:stretch}
+.phone-cc-btn{height:36px;padding:0 8px 0 10px;border:0.5px solid var(--color-border-tertiary);border-right:none;border-radius:var(--border-radius-md) 0 0 var(--border-radius-md);background:var(--color-background-primary);cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;flex-shrink:0;transition:background 0.15s;user-select:none}
+.phone-cc-btn:hover{background:var(--color-background-secondary)}
+.phone-cc-flag{font-size:18px;line-height:1}
+.phone-cc-code{font-size:12px;font-weight:600;color:var(--color-text-primary);min-width:32px}
+.phone-cc-arrow{font-size:10px;color:var(--color-text-secondary);transition:transform 0.2s}
+.phone-cc-btn.open .phone-cc-arrow{transform:rotate(180deg)}
+.phone-wrapper .phone-inp{border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;flex:1;min-width:0;width:auto}
+.phone-dropdown{position:absolute;top:calc(100% + 5px);left:0;width:290px;max-height:260px;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);box-shadow:0 10px 32px rgba(0,0,0,0.14);z-index:200;display:none;flex-direction:column;overflow:hidden}
+.phone-dropdown.open{display:flex}
+.phone-dd-search-wrap{padding:8px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.phone-dd-search{width:100%;height:30px;font-size:13px;border-radius:6px;padding:0 10px}
+.phone-dd-list{overflow-y:auto;flex:1}
+.phone-dd-item{display:flex;align-items:center;gap:10px;padding:7px 12px;cursor:pointer;font-size:13px;transition:background 0.12s}
+.phone-dd-item:hover{background:var(--color-background-secondary)}
+.phone-dd-item.active{background:var(--color-background-success)}
+.phone-dd-flag{font-size:20px;flex-shrink:0;line-height:1}
+.phone-dd-name{flex:1;color:var(--color-text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phone-dd-code{color:var(--color-text-secondary);font-weight:600;font-size:12px;flex-shrink:0}
+
+/* ── CARD 3D SCENE ── */
+.scene{width:360px;height:220px;perspective:1400px;margin:0 auto 1.5rem;position:relative}
+.card3d{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.85s cubic-bezier(.25,.46,.45,.94);filter:drop-shadow(0 20px 40px rgba(0,0,0,0.35))}
 .card3d.flipped{transform:rotateY(180deg)}
-.face{position:absolute;width:100%;height:100%;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;transition:background 0.7s}
+.face{position:absolute;width:100%;height:100%;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;transition:background 0.8s}
+
+/* ── CARD FRONT ── */
 .face-f{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 45%,#0f3460 100%)}
 .face-b{background:linear-gradient(135deg,#16213e 0%,#0f3460 45%,#1a1a2e 100%);transform:rotateY(180deg)}
-.shine{position:absolute;inset:0;border-radius:16px;overflow:hidden;pointer-events:none;z-index:10}
-.shine::after{content:'';position:absolute;top:-50%;left:-60%;width:55%;height:220%;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,0.05) 44%,rgba(255,255,255,0.18) 50%,rgba(255,255,255,0.05) 56%,transparent 62%);transform:rotate(25deg);animation:shimmer 4s ease-in-out infinite}
-@keyframes shimmer{0%{left:-60%}45%{left:140%}100%{left:140%}}
-@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* Shine sweep */
+.shine{position:absolute;inset:0;border-radius:18px;overflow:hidden;pointer-events:none;z-index:20}
+.shine::after{content:'';position:absolute;top:-60%;left:-70%;width:50%;height:240%;background:linear-gradient(105deg,transparent 36%,rgba(255,255,255,0.04) 43%,rgba(255,255,255,0.2) 50%,rgba(255,255,255,0.04) 57%,transparent 64%);transform:rotate(25deg);animation:shimmer 5s ease-in-out infinite}
+@keyframes shimmer{0%{left:-70%}40%{left:140%}100%{left:140%}}
+@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 .scene:not(:hover) .card3d:not(.flipped){animation:floatCard 4s ease-in-out infinite}
-/* Realistic EMV chip */
-.chip3d{position:absolute;top:42px;left:22px;width:46px;height:36px;border-radius:6px;background:linear-gradient(145deg,#c8a520 0%,#f0d870 22%,#b88010 38%,#f5e888 52%,#c09020 68%,#e8d060 84%,#a87820 100%);box-shadow:0 3px 8px rgba(0,0,0,0.55),inset 0 1px 3px rgba(255,255,255,0.75),inset 0 -1px 2px rgba(0,0,0,0.35);overflow:hidden;z-index:4}
-.chip-grid{position:absolute;top:5px;left:5px;right:5px;bottom:5px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2px}
-.chip-pad{background:rgba(140,95,5,0.3);border-radius:1.5px;border:0.5px solid rgba(80,50,0,0.2)}
-.chip-vline{position:absolute;top:8%;bottom:8%;left:50%;width:1px;background:rgba(100,65,0,0.22);transform:translateX(-50%)}
-.chip-hline{position:absolute;left:8%;right:8%;top:50%;height:1px;background:rgba(100,65,0,0.22);transform:translateY(-50%)}
-/* Holographic sticker */
-.card-holo{position:absolute;top:98px;left:22px;width:22px;height:22px;border-radius:3px;z-index:4;background:conic-gradient(from 0deg,rgba(255,80,80,0.8),rgba(255,210,60,0.8),rgba(80,255,100,0.8),rgba(60,180,255,0.8),rgba(180,80,255,0.8),rgba(255,80,80,0.8));animation:holoSpin 5s linear infinite;box-shadow:0 0 8px rgba(255,255,255,0.15);opacity:0.65}
-@keyframes holoSpin{0%{filter:hue-rotate(0deg) brightness(1.1)}50%{filter:hue-rotate(180deg) brightness(1.4)}100%{filter:hue-rotate(360deg) brightness(1.1)}}
-/* Card background glow layers */
-.card-glow{position:absolute;inset:0;border-radius:16px;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 75% 20%,rgba(255,255,255,0.09) 0%,transparent 55%),radial-gradient(ellipse at 20% 80%,rgba(255,255,255,0.04) 0%,transparent 45%)}
-/* Card bank name */
-.card-bank{position:absolute;top:14px;left:22px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.55);letter-spacing:3px;text-transform:uppercase;z-index:5;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
+
+/* Diagonal pattern overlay */
+.card-pattern{position:absolute;inset:0;border-radius:18px;pointer-events:none;z-index:1;
+  background-image:repeating-linear-gradient(-55deg,transparent 0px,transparent 14px,rgba(255,255,255,0.018) 14px,rgba(255,255,255,0.018) 28px);
+}
+/* Radial glow */
+.card-glow{position:absolute;inset:0;border-radius:18px;pointer-events:none;z-index:2;
+  background:radial-gradient(ellipse at 70% 15%,rgba(255,255,255,0.1) 0%,transparent 60%),
+             radial-gradient(ellipse at 15% 85%,rgba(255,255,255,0.05) 0%,transparent 50%);
+}
+
+/* EMV Chip */
+.chip3d{position:absolute;top:46px;left:24px;width:48px;height:38px;border-radius:7px;z-index:6;
+  background:linear-gradient(145deg,#c8a520 0%,#f5e880 18%,#b08010 34%,#ffe888 50%,#c09020 66%,#ecd860 82%,#a07010 100%);
+  box-shadow:0 3px 10px rgba(0,0,0,0.6),inset 0 1px 3px rgba(255,255,255,0.8),inset 0 -1px 2px rgba(0,0,0,0.4);
+  overflow:hidden}
+.chip-grid{position:absolute;top:5px;left:5px;right:5px;bottom:5px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;gap:2.5px}
+.chip-pad{background:rgba(130,90,0,0.28);border-radius:2px;border:0.5px solid rgba(80,50,0,0.18)}
+.chip-vline{position:absolute;top:9%;bottom:9%;left:50%;width:1px;background:rgba(100,65,0,0.2);transform:translateX(-50%)}
+.chip-hline{position:absolute;left:9%;right:9%;top:50%;height:1px;background:rgba(100,65,0,0.2);transform:translateY(-50%)}
+
+/* NFC Contactless */
+.card-nfc{position:absolute;top:52px;left:80px;z-index:6}
+
+/* Holographic sticker — top-right */
+.card-holo{position:absolute;top:46px;right:22px;width:40px;height:30px;border-radius:5px;z-index:6;
+  background:conic-gradient(from 0deg,rgba(255,70,70,0.85),rgba(255,210,50,0.85),rgba(60,255,100,0.85),rgba(50,170,255,0.85),rgba(200,60,255,0.85),rgba(255,70,70,0.85));
+  animation:holoSpin 5s linear infinite;
+  box-shadow:0 0 12px rgba(255,255,255,0.18),0 2px 6px rgba(0,0,0,0.3);
+  opacity:0.75}
+@keyframes holoSpin{0%{filter:hue-rotate(0deg) brightness(1.1)}50%{filter:hue-rotate(180deg) brightness(1.45)}100%{filter:hue-rotate(360deg) brightness(1.1)}}
+
+/* Bank label */
+.card-bank{position:absolute;top:16px;left:24px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);letter-spacing:3.5px;text-transform:uppercase;z-index:6;text-shadow:0 1px 3px rgba(0,0,0,0.5)}
+
 /* Card number */
-.card-number-area{position:absolute;bottom:52px;left:22px;right:22px;display:flex;gap:14px;z-index:5}
-.num-group{display:inline-block;transition:all 0.3s;font-family:'Courier New',monospace;letter-spacing:3px;font-size:17px;text-shadow:0 2px 6px rgba(0,0,0,0.7)}
-.num-group.active{transform:scale(1.07);color:#fff}
-.num-group.filled{color:rgba(255,255,255,0.96)}
-.num-group.empty{color:rgba(255,255,255,0.28)}
-/* Card bottom info */
-.card-bottom-row{position:absolute;bottom:0;left:0;right:0;padding:0 22px 16px;display:flex;justify-content:space-between;align-items:flex-end;z-index:5}
-.card-field-label{font-size:7px;color:rgba(255,255,255,0.38);text-transform:uppercase;letter-spacing:1.8px;margin-bottom:4px;font-weight:500}
-.card-field-value{font-size:13px;color:#fff;font-weight:500;text-shadow:0 1px 5px rgba(0,0,0,0.65);max-width:155px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-/* Card back - magnetic stripe */
-.card-mag-stripe{position:absolute;top:30px;left:0;right:0;height:48px;background:linear-gradient(180deg,#2a2a2a 0%,#0a0a0a 45%,#1c1c1c 100%);box-shadow:inset 0 2px 4px rgba(0,0,0,0.6),inset 0 -1px 2px rgba(255,255,255,0.04)}
-/* Card back - signature panel */
-.card-sig-panel{position:absolute;top:92px;left:16px;right:78px;height:40px;background:repeating-linear-gradient(90deg,#e6e6dc 0px,#e6e6dc 1px,#f0f0e6 1px,#f0f0e6 5px);border-radius:3px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.12),inset 0 -1px 0 rgba(255,255,255,0.4);overflow:hidden}
-.card-sig-lines{position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0px,transparent 8px,rgba(150,100,50,0.07) 8px,rgba(150,100,50,0.07) 9px)}
-.card-sig-text{position:absolute;bottom:5px;left:8px;font-size:6px;color:rgba(0,0,0,0.22);font-style:italic;letter-spacing:0.3px}
-/* Card back - CVV */
-.card-cvv-wrap{position:absolute;top:92px;right:16px;width:56px;height:40px;background:#fff;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:0 2px 8px rgba(0,0,0,0.28),inset 0 1px 0 rgba(255,255,255,0.9)}
-.card-cvv-label{font-size:6px;color:rgba(0,0,0,0.35);letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
-.card-cvv-val{font-family:'Courier New',monospace;font-size:15px;color:#1a1a1a;font-weight:700;letter-spacing:2.5px}
-/* Card back - bottom */
-.card-back-footer{position:absolute;bottom:14px;left:16px;right:18px;display:flex;justify-content:space-between;align-items:flex-end;z-index:5}
-.card-back-security{font-size:6.5px;color:rgba(255,255,255,0.2);letter-spacing:0.4px;line-height:1.7;max-width:120px}
-.logo-wrap{position:absolute;top:12px;right:16px;height:40px;display:flex;align-items:center;transition:all 0.5s}
-.logo-wrap.pop svg{animation:logoPop 0.5s}
-@keyframes logoPop{0%{transform:scale(0.5) rotate(-10deg);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.card-number-area{position:absolute;bottom:58px;left:24px;right:24px;display:flex;gap:16px;z-index:6}
+.num-group{display:inline-block;transition:all 0.3s;font-family:'Courier New',monospace;letter-spacing:3px;font-size:17px;
+  text-shadow:0 1px 0 rgba(255,255,255,0.12),0 -1px 0 rgba(0,0,0,0.35),0 2px 8px rgba(0,0,0,0.7)}
+.num-group.active{transform:scale(1.08);color:#fff}
+.num-group.filled{color:rgba(255,255,255,0.97)}
+.num-group.empty{color:rgba(255,255,255,0.25)}
+
+/* Card bottom row: name | expiry | logo */
+.card-bottom-row{position:absolute;bottom:0;left:0;right:0;padding:0 24px 16px;display:flex;justify-content:space-between;align-items:flex-end;z-index:6}
+.card-field-label{font-size:7px;color:rgba(255,255,255,0.36);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;font-weight:600}
+.card-field-value{font-size:13px;color:#fff;font-weight:500;text-shadow:0 1px 5px rgba(0,0,0,0.7);max-width:150px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.card-logo-wrap{display:flex;align-items:center;justify-content:flex-end;height:36px;min-width:56px}
+.card-logo-wrap.pop svg{animation:logoPop 0.5s}
+@keyframes logoPop{0%{transform:scale(0.5) rotate(-10deg);opacity:0}55%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+/* Badge */
 .type-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 12px;border-radius:20px;background:var(--color-background-success);color:var(--color-text-success);opacity:0;transform:translateY(6px);transition:all 0.4s}
 .type-badge.show{opacity:1;transform:translateY(0)}
+
+/* ── CARD BACK ── */
+.card-mag-stripe{position:absolute;top:32px;left:0;right:0;height:50px;
+  background:linear-gradient(180deg,#2c2c2c 0%,#080808 45%,#1e1e1e 100%);
+  box-shadow:inset 0 3px 5px rgba(0,0,0,0.7),inset 0 -1px 2px rgba(255,255,255,0.04)}
+.card-sig-panel{position:absolute;top:96px;left:18px;right:82px;height:42px;overflow:hidden;border-radius:4px;
+  background:repeating-linear-gradient(90deg,#e4e4da 0px,#e4e4da 1px,#eeeed8 1px,#eeeed8 5px);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,0.14),inset 0 -1px 0 rgba(255,255,255,0.5)}
+.card-sig-stripe{position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0,transparent 7px,rgba(140,90,40,0.065) 7px,rgba(140,90,40,0.065) 8px)}
+.card-sig-text{position:absolute;bottom:6px;left:8px;font-size:5.5px;color:rgba(0,0,0,0.18);font-style:italic;letter-spacing:0.2px}
+.card-cvv-wrap{position:absolute;top:96px;right:18px;width:58px;height:42px;background:#fff;border-radius:5px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,1)}
+.card-cvv-label{font-size:6px;color:rgba(0,0,0,0.32);letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.card-cvv-val{font-family:'Courier New',monospace;font-size:15px;color:#111;font-weight:700;letter-spacing:3px}
+.card-back-footer{position:absolute;bottom:16px;left:18px;right:20px;display:flex;justify-content:space-between;align-items:flex-end;z-index:6}
+.card-back-security{font-size:6px;color:rgba(255,255,255,0.18);letter-spacing:0.3px;line-height:1.8;max-width:110px}
+
+/* ── BUTTONS ── */
 .btn-main{width:100%;padding:14px;font-size:15px;font-weight:500;border-radius:var(--border-radius-md);background:var(--color-text-primary);color:var(--color-background-primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform 0.15s;position:relative;overflow:hidden}
 .btn-main:hover{transform:translateY(-1px)}
 .btn-main:active{transform:scale(0.98)}
@@ -133,6 +192,8 @@
 .btn-main.loading{pointer-events:none;opacity:0.85}
 .btn-back{padding:10px 16px;font-size:13px;color:var(--color-text-secondary);background:transparent;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s}
 .btn-back:hover{color:var(--color-text-primary);border-color:var(--color-border-secondary)}
+
+/* ── OVERLAYS ── */
 .overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s}
 .overlay.show{opacity:1;pointer-events:auto}
 .overlay-bg{position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px)}
@@ -166,6 +227,8 @@
 .confetti{position:absolute;opacity:0}
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0) scale(1);opacity:1}80%{opacity:1}100%{transform:translateY(105vh) rotate(720deg) scale(0.4);opacity:0}}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── INVOICE ── */
 .inv-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;overflow-y:auto;padding:2rem 1rem}
 .inv-overlay.show{opacity:1;pointer-events:auto}
 .inv-overlay .overlay-bg{position:fixed;inset:0}
@@ -221,7 +284,24 @@
     </div>
     <div class="inp-row"><label><i class="ti ti-user" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Ad soyad</label><input type="text" id="a-name" placeholder="Ad Soyad"/><div class="err-msg">Lütfen adınızı girin</div></div>
     <div class="inp-row"><label><i class="ti ti-mail" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>E-posta</label><input type="email" id="a-email" placeholder="ornek@mail.com"/><div class="err-msg">Geçerli e-posta girin</div></div>
-    <div class="inp-row"><label><i class="ti ti-phone" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Telefon</label><input type="tel" id="a-phone" placeholder="05XX XXX XX XX"/><div class="err-msg">Telefon gerekli</div></div>
+    <div class="inp-row">
+      <label><i class="ti ti-phone" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Telefon</label>
+      <div class="phone-wrapper" id="phone-wrapper">
+        <button type="button" class="phone-cc-btn" id="cc-btn" aria-label="Ülke kodu seç">
+          <span class="phone-cc-flag" id="cc-flag">🇹🇷</span>
+          <span class="phone-cc-code" id="cc-code">+90</span>
+          <span class="phone-cc-arrow">▾</span>
+        </button>
+        <input type="tel" id="a-phone" class="phone-inp" placeholder="5XX XXX XX XX"/>
+        <div class="phone-dropdown" id="phone-dropdown">
+          <div class="phone-dd-search-wrap">
+            <input type="text" class="phone-dd-search" id="cc-search" placeholder="Ülke ara…" autocomplete="off"/>
+          </div>
+          <div class="phone-dd-list" id="cc-list"></div>
+        </div>
+      </div>
+      <div class="err-msg" id="phone-err" style="display:none">Telefon numarası gerekli</div>
+    </div>
     <div class="inp-row"><label><i class="ti ti-building" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>İl</label><select id="a-city"><option value="">Seçiniz</option><option>İstanbul</option><option>Ankara</option><option>İzmir</option><option>Samsun</option><option>Antalya</option><option>Bursa</option><option>Adana</option><option>Trabzon</option><option>Konya</option><option>Diğer</option></select></div>
     <div class="inp-row"><label><i class="ti ti-home" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Adres</label><input type="text" id="a-addr" placeholder="Mahalle, sokak, bina no, daire"/><div class="err-msg">Adres gerekli</div></div>
     <button class="btn-main" onclick="goStep(2)">Ödeme adımına geç<i class="ti ti-arrow-right" style="font-size:18px" aria-hidden="true"></i></button>
@@ -231,12 +311,18 @@
   <div class="panel" id="p2">
     <div class="scene" id="scene">
       <div class="card3d" id="card3d">
+
+        <!-- FRONT FACE -->
         <div class="face face-f" id="face-f">
+          <div class="card-pattern"></div>
           <div class="card-glow"></div>
           <div class="shine"></div>
+          <div class="card-bank">CREDIT CARD</div>
+
+          <!-- Holographic sticker top-right -->
           <div class="card-holo"></div>
-          <div class="card-bank">BANK</div>
-          <div class="logo-wrap" id="logo-front"></div>
+
+          <!-- EMV Chip -->
           <div class="chip3d">
             <div class="chip-vline"></div>
             <div class="chip-hline"></div>
@@ -246,34 +332,44 @@
               <div class="chip-pad"></div><div class="chip-pad"></div>
             </div>
           </div>
-          <svg style="position:absolute;top:50px;left:76px;z-index:5" width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M1.5 16.5C1.5 10.5 6.5 5.5 12.5 5.5" stroke="rgba(255,255,255,0.55)" stroke-width="1.6" stroke-linecap="round"><animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" repeatCount="indefinite"/></path>
-            <path d="M4.5 16.5c0-4.1 3.3-7.5 7.5-7.5" stroke="rgba(255,255,255,0.55)" stroke-width="1.6" stroke-linecap="round"><animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" begin="0.3s" repeatCount="indefinite"/></path>
-            <path d="M8 16.5c0-2.2 1.8-4 4-4" stroke="rgba(255,255,255,0.55)" stroke-width="1.6" stroke-linecap="round"><animate attributeName="opacity" values="0.3;0.9;0.3" dur="2s" begin="0.6s" repeatCount="indefinite"/></path>
-            <circle cx="12" cy="16.5" r="1.2" fill="rgba(255,255,255,0.7)"/>
+
+          <!-- NFC / Contactless -->
+          <svg class="card-nfc" width="24" height="24" viewBox="0 0 28 28" fill="none">
+            <path d="M2 20C2 12 8 6 16 6" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"><animate attributeName="opacity" values="0.25;0.85;0.25" dur="2s" repeatCount="indefinite"/></path>
+            <path d="M5.5 20c0-5.2 4-9.5 9.5-9.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"><animate attributeName="opacity" values="0.25;0.85;0.25" dur="2s" begin="0.35s" repeatCount="indefinite"/></path>
+            <path d="M9.5 20c0-3 2.5-5.5 5.5-5.5" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"><animate attributeName="opacity" values="0.25;0.85;0.25" dur="2s" begin="0.7s" repeatCount="indefinite"/></path>
+            <circle cx="15" cy="20" r="1.5" fill="rgba(255,255,255,0.75)"/>
           </svg>
+
+          <!-- Card number -->
           <div class="card-number-area">
             <span class="num-group empty" id="ng0">••••</span>
             <span class="num-group empty" id="ng1">••••</span>
             <span class="num-group empty" id="ng2">••••</span>
             <span class="num-group empty" id="ng3">••••</span>
           </div>
+
+          <!-- Bottom: holder | expiry | network logo -->
           <div class="card-bottom-row">
             <div>
               <div class="card-field-label">Kart Sahibi</div>
               <div class="card-field-value" id="f-name">AD SOYAD</div>
             </div>
-            <div style="text-align:right">
+            <div style="text-align:center">
               <div class="card-field-label">Son Kullanma</div>
               <div class="card-field-value" id="f-exp" style="font-family:'Courier New',monospace;letter-spacing:1px">••/••</div>
             </div>
+            <div class="card-logo-wrap" id="logo-front"></div>
           </div>
         </div>
+
+        <!-- BACK FACE -->
         <div class="face face-b" id="face-b">
+          <div class="card-pattern"></div>
           <div class="shine"></div>
           <div class="card-mag-stripe"></div>
           <div class="card-sig-panel">
-            <div class="card-sig-lines"></div>
+            <div class="card-sig-stripe"></div>
             <div class="card-sig-text">AUTHORIZED SIGNATURE — NOT VALID UNLESS SIGNED</div>
           </div>
           <div class="card-cvv-wrap">
@@ -282,13 +378,25 @@
           </div>
           <div class="card-back-footer">
             <div class="card-back-security">Güvenli ödeme<br>256-bit SSL şifreli</div>
-            <div id="logo-back"></div>
+            <div class="card-logo-wrap" id="logo-back"></div>
           </div>
         </div>
+
       </div>
     </div>
-    <div class="inp-row"><label><i class="ti ti-credit-card" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Kart numarası</label><div style="position:relative"><input type="text" id="i-num" placeholder="0000 0000 0000 0000" maxlength="19" oninput="uNum(this)" onfocus="flipTo(false)"/><span id="inp-logo" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;align-items:center"><i class="ti ti-credit-card" style="font-size:20px;color:var(--color-text-secondary)" aria-hidden="true"></i></span></div><div style="text-align:center;margin-top:6px"><span class="type-badge" id="badge"><i class="ti ti-check" style="font-size:14px" aria-hidden="true"></i><span id="badge-text"></span></span></div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="inp-row"><label><i class="ti ti-calendar" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Son kullanma</label><input type="text" id="i-exp" placeholder="AA / YY" maxlength="7" oninput="uExp(this)" onfocus="flipTo(false)"/></div><div class="inp-row"><label><i class="ti ti-lock" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>CVV</label><input type="text" id="i-cvv" placeholder="•••" maxlength="4" onfocus="flipTo(true)" onblur="flipTo(false)" oninput="uCvv(this.value)"/></div></div>
+
+    <div class="inp-row">
+      <label><i class="ti ti-credit-card" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Kart numarası</label>
+      <div style="position:relative">
+        <input type="text" id="i-num" placeholder="0000 0000 0000 0000" maxlength="19" oninput="uNum(this)" onfocus="flipTo(false)"/>
+        <span id="inp-logo" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;align-items:center"><i class="ti ti-credit-card" style="font-size:20px;color:var(--color-text-secondary)" aria-hidden="true"></i></span>
+      </div>
+      <div style="text-align:center;margin-top:6px"><span class="type-badge" id="badge"><i class="ti ti-check" style="font-size:14px" aria-hidden="true"></i><span id="badge-text"></span></span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="inp-row"><label><i class="ti ti-calendar" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Son kullanma</label><input type="text" id="i-exp" placeholder="AA / YY" maxlength="7" oninput="uExp(this)" onfocus="flipTo(false)"/></div>
+      <div class="inp-row"><label><i class="ti ti-lock" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>CVV</label><input type="text" id="i-cvv" placeholder="•••" maxlength="4" onfocus="flipTo(true)" onblur="flipTo(false)" oninput="uCvv(this.value)"/></div>
+    </div>
     <div class="inp-row"><label><i class="ti ti-cash" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Taksit</label><select id="i-taksit"><option value="1">Tek çekim — ₺1.299,00</option><option value="2">2 taksit — 2 × ₺649,50</option><option value="3">3 taksit — 3 × ₺433,00</option><option value="6">6 taksit — 6 × ₺216,50</option><option value="12">12 taksit — 12 × ₺108,25</option></select></div>
     <div style="display:flex;gap:10px;margin-top:8px">
       <button class="btn-back" onclick="goStep(1)"><i class="ti ti-arrow-left" style="font-size:16px" aria-hidden="true"></i>Geri</button>
@@ -345,7 +453,6 @@
         <div class="stamp-dust" id="stamp-dust"></div>
       </div>
     </div>
-
     <div class="inv-body" id="inv-body-content">
       <div class="inv-info">
         <div class="inv-info-block">
@@ -364,7 +471,6 @@
           <p class="inv-status-line" id="inv-status-final" style="color:var(--color-text-success)"><i class="ti ti-circle-check" style="font-size:14px" aria-hidden="true"></i><span style="font-weight:500">Onaylandı</span></p>
         </div>
       </div>
-
       <table class="inv-table">
         <thead><tr><th>Ürün</th><th>Adet</th><th>Birim fiyat</th><th>Tutar</th></tr></thead>
         <tbody>
@@ -373,11 +479,9 @@
           <tr class="inv-total-row"><td colspan="3" style="font-weight:500">Genel toplam</td><td style="font-size:18px;font-weight:500">₺1.299,00</td></tr>
         </tbody>
       </table>
-
       <div class="inv-barcode" id="inv-barcode"></div>
       <p style="text-align:center;font-size:11px;color:var(--color-text-secondary);margin:6px 0 0">Bu fatura elektronik olarak oluşturulmuştur.</p>
     </div>
-
     <div class="inv-footer">
       <button class="inv-btn secondary" onclick="closeInv()"><i class="ti ti-x" style="font-size:15px" aria-hidden="true"></i>Kapat</button>
       <button class="inv-btn secondary" onclick="printInv()"><i class="ti ti-printer" style="font-size:15px" aria-hidden="true"></i>Yazdır</button>
