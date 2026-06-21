@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animated Payment Form — Demo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+  :root{
+    --color-background-primary:#ffffff;
+    --color-background-secondary:#f3f3f1;
+    --color-background-success:#e6f4ea;
+    --color-background-danger:#fdecea;
+    --color-text-primary:#1f1f1e;
+    --color-text-secondary:#6b6b68;
+    --color-text-success:#1e7e34;
+    --color-text-danger:#c0392b;
+    --color-text-warning:#b8860b;
+    --color-border-tertiary:rgba(0,0,0,0.12);
+    --color-border-secondary:rgba(0,0,0,0.22);
+    --color-border-success:#1e7e34;
+    --color-border-danger:#c0392b;
+    --border-radius-md:8px;
+    --border-radius-lg:12px;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --color-background-primary:#1c1c1c;
+      --color-background-secondary:#272727;
+      --color-background-success:#16321f;
+      --color-background-danger:#3a1f1d;
+      --color-text-primary:#f2f2f0;
+      --color-text-secondary:#a3a3a0;
+      --color-text-success:#5fd07c;
+      --color-text-danger:#ef6b5c;
+      --color-text-warning:#e0b04a;
+      --color-border-tertiary:rgba(255,255,255,0.14);
+      --color-border-secondary:rgba(255,255,255,0.24);
+      --color-border-success:#5fd07c;
+      --color-border-danger:#ef6b5c;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:2rem 1rem;background:var(--color-background-primary);color:var(--color-text-primary);min-height:100vh}
+  input,select{height:36px;padding:0 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:14px;outline:none}
+  input:focus,select:focus{border-color:var(--color-border-secondary);box-shadow:0 0 0 2px rgba(0,0,0,0.04)}
+</style>
+</head>
+<body>
+
+<!-- ===================== WIDGET MARKUP START ===================== -->
+<style>
+*{box-sizing:border-box}
+.wrap{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:2rem 1.5rem 1.5rem;max-width:500px;margin:0 auto}
+.steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:2rem}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;border:2px solid var(--color-border-tertiary);color:var(--color-text-secondary);background:var(--color-background-primary);transition:all 0.4s;position:relative;z-index:1}
+.step-dot.active{border-color:var(--color-text-primary);color:var(--color-text-primary);transform:scale(1.1)}
+.step-dot.done{border-color:var(--color-text-success);background:var(--color-background-success);color:var(--color-text-success)}
+.step-line{width:60px;height:2px;background:var(--color-border-tertiary);transition:background 0.4s}
+.step-line.done{background:var(--color-text-success)}
+.step-label{font-size:11px;color:var(--color-text-secondary);text-align:center;margin-top:4px;position:absolute;top:100%;white-space:nowrap;left:50%;transform:translateX(-50%)}
+.step-dot.active .step-label{color:var(--color-text-primary);font-weight:500}
+.panel{display:none;animation:panelIn 0.45s}
+.panel.active{display:block}
+@keyframes panelIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+.inp-row{margin-bottom:14px}
+.inp-row label{display:block;font-size:12px;color:var(--color-text-secondary);margin-bottom:5px;font-weight:500;letter-spacing:0.3px;transition:color 0.3s}
+.inp-row:focus-within label{color:var(--color-text-primary)}
+.inp-row input,.inp-row select{width:100%;box-sizing:border-box}
+.inp-row input.err{border-color:var(--color-border-danger);animation:inputShake 0.5s}
+.inp-row .err-msg{font-size:11px;color:var(--color-text-danger);margin-top:4px;display:none}
+.inp-row input.err~.err-msg{display:block}
+@keyframes inputShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.scene{width:340px;height:210px;perspective:1200px;margin:0 auto 1.5rem;position:relative}
+.card3d{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.8s cubic-bezier(.25,.46,.45,.94)}
+.card3d.flipped{transform:rotateY(180deg)}
+.face{position:absolute;width:100%;height:100%;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;transition:background 0.6s}
+.face-f{background:#1a1a2e}
+.face-b{background:#16213e;transform:rotateY(180deg)}
+.shine{position:absolute;inset:0;border-radius:16px;overflow:hidden;pointer-events:none;z-index:2}
+.shine::after{content:'';position:absolute;top:-50%;left:-50%;width:60%;height:200%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.08) 45%,rgba(255,255,255,0.14) 50%,rgba(255,255,255,0.08) 55%,transparent 60%);transform:rotate(25deg);animation:shimmer 3s ease-in-out infinite}
+@keyframes shimmer{0%{left:-50%}50%{left:130%}100%{left:130%}}
+@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.scene:not(:hover) .card3d:not(.flipped){animation:floatCard 4s ease-in-out infinite}
+.chip3d{position:absolute;top:44px;left:22px;width:42px;height:30px;border-radius:5px;background:#c8a84b;overflow:hidden}
+.chip3d::after{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,0,0,0.2)}
+.num-group{display:inline-block;transition:all 0.3s;font-family:'Courier New',monospace;letter-spacing:2.5px;font-size:16px}
+.num-group.active{transform:scale(1.06);color:#fff}
+.num-group.filled{color:rgba(255,255,255,0.95)}
+.num-group.empty{color:rgba(255,255,255,0.3)}
+.logo-wrap{position:absolute;top:12px;right:16px;height:40px;display:flex;align-items:center;transition:all 0.5s}
+.logo-wrap.pop svg{animation:logoPop 0.5s}
+@keyframes logoPop{0%{transform:scale(0.5) rotate(-10deg);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.type-badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:4px 12px;border-radius:20px;background:var(--color-background-success);color:var(--color-text-success);opacity:0;transform:translateY(6px);transition:all 0.4s}
+.type-badge.show{opacity:1;transform:translateY(0)}
+.btn-main{width:100%;padding:14px;font-size:15px;font-weight:500;border-radius:var(--border-radius-md);background:var(--color-text-primary);color:var(--color-background-primary);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform 0.15s;position:relative;overflow:hidden}
+.btn-main:hover{transform:translateY(-1px)}
+.btn-main:active{transform:scale(0.98)}
+.btn-main::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,0.1) 50%,transparent 60%);transform:translateX(-100%);transition:transform 0.6s}
+.btn-main:hover::after{transform:translateX(100%)}
+.btn-main.loading{pointer-events:none;opacity:0.85}
+.btn-back{padding:10px 16px;font-size:13px;color:var(--color-text-secondary);background:transparent;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.2s}
+.btn-back:hover{color:var(--color-text-primary);border-color:var(--color-border-secondary)}
+.overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s}
+.overlay.show{opacity:1;pointer-events:auto}
+.overlay-bg{position:absolute;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px)}
+.result-card{position:relative;z-index:1;width:400px;max-width:92vw;background:var(--color-background-primary);border-radius:20px;padding:2.5rem 2rem 2rem;text-align:center;transform:scale(0.7) translateY(30px);transition:transform 0.5s cubic-bezier(.34,1.56,.64,1);opacity:0}
+.overlay.show .result-card{transform:scale(1) translateY(0);opacity:1}
+.res-icon{width:90px;height:90px;border-radius:50%;margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center;position:relative}
+.res-icon svg path{stroke-dasharray:34;stroke-dashoffset:34}
+.overlay.show .res-icon svg path{animation:drawIcon 0.6s 0.5s forwards}
+@keyframes drawIcon{to{stroke-dashoffset:0}}
+.res-ring{position:absolute;inset:-6px;border-radius:50%;opacity:0}
+.overlay.show .res-ring{animation:ringPulse 1s 0.3s forwards}
+@keyframes ringPulse{0%{transform:scale(0.8);opacity:0}50%{opacity:1}100%{transform:scale(1.15);opacity:0}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.r-title{font-size:22px;font-weight:500;margin:0 0 6px;opacity:0}
+.r-sub{font-size:14px;color:var(--color-text-secondary);margin:0 0 1.5rem;opacity:0}
+.r-details{border-top:0.5px solid var(--color-border-tertiary);padding-top:1rem;margin-bottom:1.5rem;opacity:0}
+.overlay.show .r-title{animation:fadeUp 0.5s 0.7s forwards}
+.overlay.show .r-sub{animation:fadeUp 0.5s 0.85s forwards}
+.overlay.show .r-details{animation:fadeUp 0.5s 1s forwards}
+.r-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px}
+.r-row .lab{color:var(--color-text-secondary)}
+.r-row .val{font-weight:500}
+.r-total{border-top:0.5px solid var(--color-border-tertiary);margin-top:6px;padding-top:10px}
+.r-total .val{font-size:18px}
+.r-btn-row{display:flex;gap:10px;opacity:0}
+.overlay.show .r-btn-row{animation:fadeUp 0.5s 1.15s forwards}
+.r-btn{flex:1;padding:13px;font-size:14px;font-weight:500;border-radius:var(--border-radius-md);border:none;cursor:pointer;transition:transform 0.15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.r-btn:hover{transform:translateY(-1px)}
+.r-btn:active{transform:scale(0.98)}
+.confetti-box{position:fixed;inset:0;z-index:10000;pointer-events:none;overflow:hidden}
+.confetti{position:absolute;opacity:0}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0) scale(1);opacity:1}80%{opacity:1}100%{transform:translateY(105vh) rotate(720deg) scale(0.4);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.inv-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:flex-start;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;overflow-y:auto;padding:2rem 1rem}
+.inv-overlay.show{opacity:1;pointer-events:auto}
+.inv-overlay .overlay-bg{position:fixed;inset:0}
+.invoice{position:relative;z-index:1;width:480px;max-width:95vw;background:var(--color-background-primary);border-radius:16px;overflow:hidden;transform:scale(0.9) translateY(20px);transition:transform 0.5s cubic-bezier(.34,1.56,.64,1);opacity:0}
+.inv-overlay.show .invoice{transform:scale(1) translateY(0);opacity:1}
+.inv-header{padding:2rem 2rem 1.5rem;position:relative;overflow:hidden}
+.inv-header::before{content:'';position:absolute;inset:0;background:#1a1a2e;opacity:0.04}
+.inv-body{padding:0 2rem 2rem}
+.inv-table{width:100%;border-collapse:collapse;font-size:13px;margin:1rem 0}
+.inv-table th{text-align:left;font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-weight:500}
+.inv-table td{padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+.inv-table td:last-child,.inv-table th:last-child{text-align:right}
+.inv-total-row td{border-bottom:none;font-weight:500;font-size:15px;padding-top:14px}
+.inv-info{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin:1rem 0}
+.inv-info-block p{margin:0;font-size:13px;line-height:1.7}
+.inv-info-block .lbl{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;font-weight:500}
+.stamp-zone{position:relative;height:0}
+.stamp{position:absolute;top:-10px;right:2rem;transform:translateY(-50%) rotate(-15deg) scale(3);border:3px solid var(--color-border-success);color:var(--color-text-success);font-size:14px;font-weight:500;padding:6px 18px;border-radius:8px;text-transform:uppercase;letter-spacing:2px;opacity:0;pointer-events:none;background:transparent}
+.stamp.slam{animation:stampSlam 0.5s cubic-bezier(.2,1.4,.6,1) forwards;animation-delay:0.6s}
+@keyframes stampSlam{0%{opacity:0;transform:translateY(-50%) rotate(-15deg) scale(3)}55%{opacity:0.9;transform:translateY(-50%) rotate(-15deg) scale(0.85)}70%{opacity:0.75;transform:translateY(-50%) rotate(-13deg) scale(1.05)}85%{opacity:0.65;transform:translateY(-50%) rotate(-16deg) scale(0.96)}100%{opacity:0.6;transform:translateY(-50%) rotate(-15deg) scale(1)}}
+.stamp-dust{position:absolute;top:-10px;right:2rem;width:0;height:0;pointer-events:none}
+.dust-particle{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--color-text-success);opacity:0}
+.stamp.slam ~ .stamp-dust .dust-particle{animation:dustOut 0.5s ease-out forwards;animation-delay:1.05s}
+@keyframes dustOut{0%{opacity:0.7;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(0.3)}}
+.inv-screen-shake{animation:screenShake 0.35s cubic-bezier(.36,.07,.19,.97);animation-delay:1.05s}
+@keyframes screenShake{0%,100%{transform:scale(1) translateY(0)}20%{transform:scale(1) translate(-2px,1px)}40%{transform:scale(1) translate(2px,-1px)}60%{transform:scale(1) translate(-1px,1px)}80%{transform:scale(1) translate(1px,-1px)}}
+.inv-footer{border-top:0.5px solid var(--color-border-tertiary);padding:1.5rem 2rem;display:flex;gap:10px;justify-content:flex-end}
+.inv-btn{padding:10px 20px;font-size:13px;font-weight:500;border-radius:var(--border-radius-md);cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform 0.15s;border:none}
+.inv-btn:hover{transform:translateY(-1px)}
+.inv-btn.primary{background:var(--color-text-primary);color:var(--color-background-primary)}
+.inv-btn.secondary{background:transparent;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary)}
+.inv-barcode{display:flex;align-items:flex-end;gap:1px;height:30px;margin-top:1rem;justify-content:center}
+.inv-barcode span{background:var(--color-text-primary);opacity:0.25;display:inline-block}
+.inv-status-line{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-text-secondary);opacity:0;transition:opacity 0.3s}
+.inv-status-line.show{opacity:1}
+@keyframes blinkDot{0%,100%{opacity:1}50%{opacity:0.2}}
+</style>
+
+<div class="wrap">
+  <div class="steps">
+    <div class="step-dot active" id="sd1" style="position:relative"><i class="ti ti-map-pin" style="font-size:15px" aria-hidden="true"></i><span class="step-label">Adres</span></div>
+    <div class="step-line" id="sl1"></div>
+    <div class="step-dot" id="sd2" style="position:relative"><i class="ti ti-credit-card" style="font-size:15px" aria-hidden="true"></i><span class="step-label">Ödeme</span></div>
+    <div class="step-line" id="sl2"></div>
+    <div class="step-dot" id="sd3" style="position:relative"><i class="ti ti-check" style="font-size:15px" aria-hidden="true"></i><span class="step-label">Onay</span></div>
+  </div>
+
+  <!-- STEP 1: ADDRESS -->
+  <div class="panel active" id="p1">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--color-background-primary);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);margin-bottom:14px">
+      <div><span style="font-size:13px;color:var(--color-text-secondary)">Sipariş toplamı</span><br><span style="font-size:18px;font-weight:500">₺1.299,00</span></div>
+      <div style="text-align:right;font-size:12px;color:var(--color-text-secondary)"><i class="ti ti-package" style="font-size:14px;margin-right:3px;vertical-align:-1px" aria-hidden="true"></i>1 ürün</div>
+    </div>
+    <div class="inp-row"><label><i class="ti ti-user" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Ad soyad</label><input type="text" id="a-name" placeholder="Ad Soyad"/><div class="err-msg">Lütfen adınızı girin</div></div>
+    <div class="inp-row"><label><i class="ti ti-mail" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>E-posta</label><input type="email" id="a-email" placeholder="ornek@mail.com"/><div class="err-msg">Geçerli e-posta girin</div></div>
+    <div class="inp-row"><label><i class="ti ti-phone" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Telefon</label><input type="tel" id="a-phone" placeholder="05XX XXX XX XX"/><div class="err-msg">Telefon gerekli</div></div>
+    <div class="inp-row"><label><i class="ti ti-building" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>İl</label><select id="a-city"><option value="">Seçiniz</option><option>İstanbul</option><option>Ankara</option><option>İzmir</option><option>Samsun</option><option>Antalya</option><option>Bursa</option><option>Adana</option><option>Trabzon</option><option>Konya</option><option>Diğer</option></select></div>
+    <div class="inp-row"><label><i class="ti ti-home" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Adres</label><input type="text" id="a-addr" placeholder="Mahalle, sokak, bina no, daire"/><div class="err-msg">Adres gerekli</div></div>
+    <button class="btn-main" onclick="goStep(2)">Ödeme adımına geç<i class="ti ti-arrow-right" style="font-size:18px" aria-hidden="true"></i></button>
+  </div>
+
+  <!-- STEP 2: PAYMENT -->
+  <div class="panel" id="p2">
+    <div class="scene" id="scene">
+      <div class="card3d" id="card3d">
+        <div class="face face-f" id="face-f">
+          <div class="shine"></div><div class="chip3d"></div>
+          <svg style="position:absolute;top:48px;left:72px;opacity:0.45" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M2 16.5C2 11 6.5 6.5 12 6.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" repeatCount="indefinite"/></path><path d="M5 16.5c0-3.9 3.1-7 7-7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" begin="0.3s" repeatCount="indefinite"/></path><path d="M8.5 16.5c0-1.9 1.6-3.5 3.5-3.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"><animate attributeName="opacity" values="0.3;0.8;0.3" dur="2s" begin="0.6s" repeatCount="indefinite"/></path></svg>
+          <div class="logo-wrap" id="logo-front"></div>
+          <div style="position:absolute;bottom:48px;left:22px;right:22px;display:flex;gap:10px"><span class="num-group empty" id="ng0">••••</span><span class="num-group empty" id="ng1">••••</span><span class="num-group empty" id="ng2">••••</span><span class="num-group empty" id="ng3">••••</span></div>
+          <div style="position:absolute;bottom:16px;left:22px"><div style="font-size:7px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:2px">Kart sahibi</div><div style="font-size:13px;color:#fff;max-width:140px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis" id="f-name">AD SOYAD</div></div>
+          <div style="position:absolute;bottom:16px;right:22px;text-align:right"><div style="font-size:7px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:2px">Son kullanma</div><div style="font-size:13px;color:#fff;font-family:'Courier New',monospace" id="f-exp">••/••</div></div>
+        </div>
+        <div class="face face-b" id="face-b"><div class="shine"></div><div style="position:absolute;top:36px;left:0;right:0;height:44px;background:#0a0a0a"></div><div style="position:absolute;top:92px;left:16px;right:70px;height:36px;background:#e8e8d8;border-radius:3px"></div><div style="position:absolute;top:92px;right:16px;width:50px;height:36px;background:#fff;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:14px;color:#333;font-weight:700;letter-spacing:2px" id="cvv-box">•••</div><div style="position:absolute;bottom:16px;right:18px" id="logo-back"></div></div>
+      </div>
+    </div>
+    <div class="inp-row"><label><i class="ti ti-credit-card" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Kart numarası</label><div style="position:relative"><input type="text" id="i-num" placeholder="0000 0000 0000 0000" maxlength="19" oninput="uNum(this)" onfocus="flipTo(false)"/><span id="inp-logo" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;align-items:center"><i class="ti ti-credit-card" style="font-size:20px;color:var(--color-text-secondary)" aria-hidden="true"></i></span></div><div style="text-align:center;margin-top:6px"><span class="type-badge" id="badge"><i class="ti ti-check" style="font-size:14px" aria-hidden="true"></i><span id="badge-text"></span></span></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="inp-row"><label><i class="ti ti-calendar" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Son kullanma</label><input type="text" id="i-exp" placeholder="AA / YY" maxlength="7" oninput="uExp(this)" onfocus="flipTo(false)"/></div><div class="inp-row"><label><i class="ti ti-lock" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>CVV</label><input type="text" id="i-cvv" placeholder="•••" maxlength="4" onfocus="flipTo(true)" onblur="flipTo(false)" oninput="uCvv(this.value)"/></div></div>
+    <div class="inp-row"><label><i class="ti ti-cash" style="font-size:14px;margin-right:4px;vertical-align:-1px" aria-hidden="true"></i>Taksit</label><select id="i-taksit"><option value="1">Tek çekim — ₺1.299,00</option><option value="2">2 taksit — 2 × ₺649,50</option><option value="3">3 taksit — 3 × ₺433,00</option><option value="6">6 taksit — 6 × ₺216,50</option><option value="12">12 taksit — 12 × ₺108,25</option></select></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn-back" onclick="goStep(1)"><i class="ti ti-arrow-left" style="font-size:16px" aria-hidden="true"></i>Geri</button>
+      <button class="btn-main" id="pay-btn" onclick="startPay()" style="flex:1"><i class="ti ti-lock" style="font-size:18px" aria-hidden="true"></i><span id="btn-text">₺1.299,00 öde</span></button>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:11px;color:var(--color-text-secondary);margin-top:10px"><i class="ti ti-shield-check" style="font-size:14px" aria-hidden="true"></i>256-bit SSL</div>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="overlay" id="ov-ok">
+  <div class="overlay-bg"></div>
+  <div class="result-card">
+    <div class="res-icon" style="background:var(--color-background-success)"><div class="res-ring" style="border:3px solid var(--color-border-success)"></div><svg viewBox="0 0 44 44" width="44" height="44" fill="none"><path d="M12 22l7 7 13-13" stroke="var(--color-text-success)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <p class="r-title" style="color:var(--color-text-primary)">Ödeme başarılı!</p>
+    <p class="r-sub">Faturanız hazırlandı. Detayları aşağıdan görüntüleyebilirsiniz.</p>
+    <div class="r-details">
+      <div class="r-row"><span class="lab">İşlem no</span><span class="val" id="s-txn"></span></div>
+      <div class="r-row"><span class="lab">Tarih</span><span class="val" id="s-date"></span></div>
+      <div class="r-row"><span class="lab">Kart</span><span class="val" id="s-card"></span></div>
+      <div class="r-row"><span class="lab">Taksit</span><span class="val" id="s-tak"></span></div>
+      <div class="r-row r-total"><span class="lab">Toplam</span><span class="val">₺1.299,00</span></div>
+    </div>
+    <div class="r-btn-row">
+      <button class="r-btn" style="background:var(--color-background-secondary);color:var(--color-text-secondary)" onclick="closeOv()"><i class="ti ti-x" style="font-size:16px" aria-hidden="true"></i>Kapat</button>
+      <button class="r-btn" style="background:var(--color-background-success);color:var(--color-text-success)" onclick="showInvoice()"><i class="ti ti-file-invoice" style="font-size:16px" aria-hidden="true"></i>Faturayı görüntüle</button>
+    </div>
+  </div>
+</div>
+
+<!-- INVOICE OVERLAY -->
+<div class="inv-overlay" id="inv-ov">
+  <div class="overlay-bg" onclick="closeInv()"></div>
+  <div class="invoice" id="invoice-el">
+    <div class="inv-header">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;position:relative">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+            <div style="width:36px;height:36px;border-radius:8px;background:var(--color-text-primary);display:flex;align-items:center;justify-content:center"><i class="ti ti-shopping-bag" style="font-size:20px;color:var(--color-background-primary)" aria-hidden="true"></i></div>
+            <span style="font-size:18px;font-weight:500">MağazaAI</span>
+          </div>
+          <p style="font-size:12px;color:var(--color-text-secondary);margin:0">Dijital Ticaret A.Ş.</p>
+          <p style="font-size:12px;color:var(--color-text-secondary);margin:2px 0 0">VKN: 123 456 7890</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-size:20px;font-weight:500;margin:0">FATURA</p>
+          <p style="font-size:13px;color:var(--color-text-secondary);margin:4px 0 0" id="inv-no"></p>
+          <p style="font-size:12px;color:var(--color-text-secondary);margin:2px 0 0" id="inv-date"></p>
+          <div class="inv-status-line" id="inv-status-pending" style="justify-content:flex-end"><span style="width:6px;height:6px;border-radius:50%;background:var(--color-text-warning);display:inline-block;animation:blinkDot 1s infinite"></span>Doğrulanıyor</div>
+        </div>
+      </div>
+      <div class="stamp-zone">
+        <div class="stamp" id="stamp">Onaylandı</div>
+        <div class="stamp-dust" id="stamp-dust"></div>
+      </div>
+    </div>
+
+    <div class="inv-body" id="inv-body-content">
+      <div class="inv-info">
+        <div class="inv-info-block">
+          <p class="lbl">Fatura adresi</p>
+          <p style="font-weight:500" id="inv-name"></p>
+          <p id="inv-addr"></p>
+          <p id="inv-city2"></p>
+          <p id="inv-email"></p>
+          <p id="inv-phone"></p>
+        </div>
+        <div class="inv-info-block">
+          <p class="lbl">Ödeme bilgileri</p>
+          <p id="inv-card-info"></p>
+          <p id="inv-taksit-info"></p>
+          <p id="inv-txn-info"></p>
+          <p class="inv-status-line" id="inv-status-final" style="color:var(--color-text-success)"><i class="ti ti-circle-check" style="font-size:14px" aria-hidden="true"></i><span style="font-weight:500">Onaylandı</span></p>
+        </div>
+      </div>
+
+      <table class="inv-table">
+        <thead><tr><th>Ürün</th><th>Adet</th><th>Birim fiyat</th><th>Tutar</th></tr></thead>
+        <tbody>
+          <tr><td>Premium Ürün</td><td>1</td><td>₺1.100,85</td><td>₺1.100,85</td></tr>
+          <tr><td colspan="3" style="color:var(--color-text-secondary)">KDV (%18)</td><td>₺198,15</td></tr>
+          <tr class="inv-total-row"><td colspan="3" style="font-weight:500">Genel toplam</td><td style="font-size:18px;font-weight:500">₺1.299,00</td></tr>
+        </tbody>
+      </table>
+
+      <div class="inv-barcode" id="inv-barcode"></div>
+      <p style="text-align:center;font-size:11px;color:var(--color-text-secondary);margin:6px 0 0">Bu fatura elektronik olarak oluşturulmuştur.</p>
+    </div>
+
+    <div class="inv-footer">
+      <button class="inv-btn secondary" onclick="closeInv()"><i class="ti ti-x" style="font-size:15px" aria-hidden="true"></i>Kapat</button>
+      <button class="inv-btn secondary" onclick="printInv()"><i class="ti ti-printer" style="font-size:15px" aria-hidden="true"></i>Yazdır</button>
+      <button class="inv-btn primary" onclick="downloadInv()"><i class="ti ti-download" style="font-size:15px" aria-hidden="true"></i>İndir</button>
+    </div>
+  </div>
+</div>
+
+<div class="confetti-box" id="confetti-box"></div>
+<!-- ===================== WIDGET MARKUP END ===================== -->
+
+<script src="assets/payment-form.js"></script>
+</body>
+</html>
