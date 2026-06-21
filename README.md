@@ -4,6 +4,8 @@ Saf HTML, CSS ve vanilla JavaScript ile yapılmış, **3D kart animasyonlu**, **
 
 > ⚠️ Bu proje sadece bir **frontend görsel demo**'dur. Gerçek bir ödeme işlemi gerçekleştirmez, hiçbir veri sunucuya gönderilmez ve hiçbir ödeme altyapısına (Stripe, iyzico, PayTR vb.) bağlı değildir. Kendi projenize entegre etmek isterseniz aşağıdaki [Gerçek ödeme entegrasyonu](#gerçek-ödeme-entegrasyonu) bölümüne bakın.
 
+> https://mwlih28.github.io/animated-payment-form/ giderek nası göründüğüne bakabilirsiniz.
+
 ## ✨ Özellikler
 
 - 🔄 **3 adımlı checkout akışı** — adres, ödeme, onay
