@@ -305,18 +305,143 @@ function printInv() {
 }
 
 function downloadInv() {
-  const w = window.open('', '', 'width=600,height=800');
-  w.document.write('<html><head><title>Fatura #' + txnId + '</title><style>body{font-family:sans-serif;padding:2rem;color:#222}table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:left;border-bottom:1px solid #eee}th{font-size:11px;color:#888;text-transform:uppercase}.total td{border:none;font-weight:700;font-size:16px;padding-top:14px}.stamp{float:right;border:3px solid #2e7d32;color:#2e7d32;padding:6px 18px;border-radius:8px;transform:rotate(-15deg);opacity:0.6;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:-40px;font-size:14px}</style></head><body>');
-  w.document.write('<h1 style="font-size:22px">FATURA</h1><p style="color:#888">#' + txnId + ' | ' + payDate + '</p>');
-  w.document.write('<div class="stamp">Onaylandı</div>');
-  w.document.write('<hr><p><strong>' + document.getElementById('a-name').value + '</strong><br>' + document.getElementById('a-addr').value + '<br>' + document.getElementById('a-city').value + '<br>' + document.getElementById('a-email').value + '<br>' + document.getElementById('a-phone').value + '</p>');
-  w.document.write('<table><thead><tr><th>Ürün</th><th>Adet</th><th>Birim fiyat</th><th style="text-align:right">Tutar</th></tr></thead><tbody>');
-  w.document.write('<tr><td>Premium Ürün</td><td>1</td><td>₺1.100,85</td><td style="text-align:right">₺1.100,85</td></tr>');
-  w.document.write('<tr><td colspan="3" style="color:#888">KDV (%18)</td><td style="text-align:right">₺198,15</td></tr>');
-  w.document.write('<tr class="total"><td colspan="3">Genel toplam</td><td style="text-align:right">₺1.299,00</td></tr>');
-  w.document.write('</tbody></table><br><p style="text-align:center;color:#aaa;font-size:12px">Bu fatura elektronik olarak oluşturulmuştur. | MağazaAI Dijital Ticaret A.Ş.</p></body></html>');
-  w.document.close();
-  w.print();
+  if (typeof window.jspdf === 'undefined') {
+    alert('PDF kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+  const numVal = document.getElementById('i-num').value.replace(/\s/g, '');
+  const last4 = numVal.length >= 4 ? numVal.slice(-4) : '0000';
+  const ts = document.getElementById('i-taksit');
+  const cardLabel = (curType ? cnames[curType] + ' ' : '') + '•••• ' + last4;
+  const taksitLabel = ts.options[ts.selectedIndex].text.split('—')[0].trim();
+
+  const name = document.getElementById('a-name').value || '-';
+  const addr = document.getElementById('a-addr').value || '-';
+  const city = document.getElementById('a-city').value || '-';
+  const email = document.getElementById('a-email').value || '-';
+  const phone = document.getElementById('a-phone').value || '-';
+
+  const pageW = 210;
+  let y = 20;
+
+  // Header
+  doc.setFillColor(26, 26, 46);
+  doc.roundedRect(15, y - 6, 10, 10, 2, 2, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'bold');
+  doc.text('M', 20, y, { align: 'center' });
+
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(14);
+  doc.text('MağazaAI', 30, y);
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(120, 120, 120);
+  doc.text('Dijital Ticaret A.Ş.  |  VKN: 123 456 7890', 30, y + 6);
+
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(20);
+  doc.setFont('helvetica', 'bold');
+  doc.text('FATURA', pageW - 15, y, { align: 'right' });
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(120, 120, 120);
+  doc.text('#' + txnId, pageW - 15, y + 6, { align: 'right' });
+  doc.text(payDate, pageW - 15, y + 11, { align: 'right' });
+
+  // Approved stamp
+  doc.setDrawColor(30, 126, 52);
+  doc.setTextColor(30, 126, 52);
+  doc.setLineWidth(1);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  const stampX = pageW - 45, stampY = y + 22;
+  doc.saveGraphicsState && doc.saveGraphicsState();
+  doc.text('ONAYLANDI', stampX, stampY, { angle: 12, align: 'center' });
+  doc.roundedRect(stampX - 22, stampY - 6, 44, 10, 2, 2, 'S');
+
+  y += 30;
+  doc.setDrawColor(220, 220, 220);
+  doc.line(15, y, pageW - 15, y);
+  y += 10;
+
+  // Billing info (two columns)
+  doc.setTextColor(140, 140, 140);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'bold');
+  doc.text('FATURA ADRESİ', 15, y);
+  doc.text('ÖDEME BİLGİLERİ', 110, y);
+  y += 6;
+
+  doc.setTextColor(30, 30, 30);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  const leftLines = [name, addr, city, email, phone];
+  const rightLines = [cardLabel, taksitLabel + ' taksit', 'Ref: ' + txnId, 'Durum: Onaylandı'];
+  let ly = y, ry = y;
+  leftLines.forEach((line, i) => {
+    doc.setFont('helvetica', i === 0 ? 'bold' : 'normal');
+    doc.text(String(line), 15, ly);
+    ly += 6;
+  });
+  rightLines.forEach((line) => {
+    doc.text(String(line), 110, ry);
+    ry += 6;
+  });
+
+  y = Math.max(ly, ry) + 8;
+  doc.setDrawColor(220, 220, 220);
+  doc.line(15, y, pageW - 15, y);
+  y += 8;
+
+  // Table header
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(140, 140, 140);
+  doc.text('ÜRÜN', 15, y);
+  doc.text('ADET', 110, y);
+  doc.text('BİRİM FİYAT', 135, y);
+  doc.text('TUTAR', pageW - 15, y, { align: 'right' });
+  y += 4;
+  doc.setDrawColor(220, 220, 220);
+  doc.line(15, y, pageW - 15, y);
+  y += 7;
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(30, 30, 30);
+  doc.text('Premium Ürün', 15, y);
+  doc.text('1', 110, y);
+  doc.text('₺1.100,85', 135, y);
+  doc.text('₺1.100,85', pageW - 15, y, { align: 'right' });
+  y += 8;
+
+  doc.setTextColor(140, 140, 140);
+  doc.text('KDV (%18)', 15, y);
+  doc.setTextColor(30, 30, 30);
+  doc.text('₺198,15', pageW - 15, y, { align: 'right' });
+  y += 4;
+  doc.setDrawColor(220, 220, 220);
+  doc.line(15, y, pageW - 15, y);
+  y += 8;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.text('Genel toplam', 15, y);
+  doc.text('₺1.299,00', pageW - 15, y, { align: 'right' });
+
+  y += 20;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(160, 160, 160);
+  doc.text('Bu fatura elektronik olarak oluşturulmuştur.', pageW / 2, y, { align: 'center' });
+  doc.text('MağazaAI Dijital Ticaret A.Ş.', pageW / 2, y + 4, { align: 'center' });
+
+  doc.save('fatura-' + txnId + '.pdf');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
